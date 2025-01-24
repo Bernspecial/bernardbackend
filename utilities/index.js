@@ -7,7 +7,7 @@ const Util = {}
 Util.getNav = async function (req, res, next) {
     let data = await invModel.getClassifications()
     //   console.log(data)
-    let list = "<ul>"
+    let list = '<ul id="ul">'
     list += '<li><a href="/" title="Home page">Home</a></li>'
     data.rows.forEach((row) => {
         list += "<li>"
@@ -59,6 +59,30 @@ Util.buildClassificationGrid = async function (data) {
     return grid
 }
 
+Util.buildVehicleDetailHTML = (vehicles) => {
+    let vehicleDetailsHTML = '';
+    if (vehicles.length > 0) {
+        vehicles.forEach(vehicle => {
+            const priceFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(vehicle.inv_price);
+            const mileageFormatted = new Intl.NumberFormat('en-US').format(vehicle.inv_miles);
+
+            vehicleDetailsHTML += '<div class="vehicle-detail">';
+            vehicleDetailsHTML += '<div class="vehicle-image">';
+            vehicleDetailsHTML += '<img src="' + vehicle.inv_image + '" alt="' + vehicle.inv_make + ' ' + vehicle.inv_model + '">';
+            vehicleDetailsHTML += '</div>';
+            vehicleDetailsHTML += '<div class="vehicle-info">';
+            vehicleDetailsHTML += '<h1>' + vehicle.inv_make + ' ' + vehicle.inv_model + '</h1>';
+            vehicleDetailsHTML += '<p><strong>Year:</strong> ' + vehicle.inv_year + '</p>';
+            vehicleDetailsHTML += '<p><strong>Price:</strong> ' + priceFormatted + '</p>';
+            vehicleDetailsHTML += '<p><strong>Mileage:</strong> ' + mileageFormatted + ' miles</p>';
+            vehicleDetailsHTML += '<p><strong>Description:</strong> ' + vehicle.inv_description + '</p>';
+            vehicleDetailsHTML += '</div>';
+            vehicleDetailsHTML += '</div>';
+        });
+    }
+
+    return vehicleDetailsHTML;
+};
 
 /* ****************************************
  * Middleware For Handling Errors
