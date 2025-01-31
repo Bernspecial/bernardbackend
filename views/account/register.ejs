@@ -1,0 +1,54 @@
+<h1 class="page-title">
+    <%= title %>
+</h1>
+
+<% if (messages.notice) { %>
+    <div class="flash-message">
+        <%= messages.notice %>
+    </div>
+    <% } %>
+        <% if (errors) { %>
+            <ul class="notice">
+                <% errors.array().forEach(error=> { %>
+                    <li>
+                        <%= error.msg %>
+                    </li>
+                    <% }) %>
+            </ul>
+            <% } %>
+
+                <form action="/account/register" method="POST" class="registration-form"> <!-- Added class -->
+                    <label for="firstName" class="form-label">First Name:</label>
+                    <input type="text" name="account_firstname" id="firstName" class="form-input" required
+                        value="<%= locals.account_firstname %>">
+                    <!-- Updated name -->
+
+                    <label for=" lastName" class="form-label">Last Name:</label>
+                    <input type="text" name="account_lastname" id="lastName" class="form-input" required
+                        value="<%= locals.account_lastname %>">
+                    <!-- Updated name -->
+
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" name="account_email" id="email" class="form-input" required
+                        placeholder="Enter a valid email address" value="<%= locals.account_email %>">
+
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" name="account_password" id="password" class="form-input" required
+                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+                    <div class="password-requirements">
+                        <h4>Password Requirements:</h4>
+                        <ul>
+                            <li>At least 12 characters long</li>
+                            <li>At least one uppercase letter (A-Z)</li>
+                            <li>At least one lowercase letter (a-z)</li>
+                            <li>At least one digit (0-9)</li>
+                            <li>At least one special character (e.g., !@#$%^&*)</li>
+                            <li>No spaces allowed</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="submit-button">Register</button> <!-- Added class -->
+                </form>
+
+                <p class="login-link">Already have an account? <a href="/account/login">Login here</a></p>
+                <!-- Added class -->

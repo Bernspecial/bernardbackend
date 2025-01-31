@@ -439,6 +439,190 @@ hr {
   border-radius: 5px;
 }
 
+/* .................Login styling */
+/* General container styling */
+.container {
+  max-width: 900px;
+  min-width: 320px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+/* Heading styling */
+.container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Flash message styling */
+.flash-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Form group styling */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Label styling */
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Input styling */
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* Button styling */
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Registration link styling */
+.container p {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.container p a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.container p a:hover {
+  text-decoration: underline;
+}
+
+
+
+/* .............Register styling.......... */
+
+/* General Form Styles */
+.registration-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5em;
+  margin-bottom: 1em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.7em;
+  color: #fff;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.flash-message {
+  padding: 1em;
+  margin-bottom: 1em;
+  border: 1px solid red;
+  color: red;
+  background: #fdd;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1em;
+}
+
+.login-link a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Page Title Styles */
+.page-title {
+  text-align: center;
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+
+.password-requirements {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.password-requirements h4 {
+  margin: 0 0 10px 0;
+}
+
+.password-requirements ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.password-requirements li {
+  margin: 5px 0;
+}
+
+
+
+/* ............................. */
+
 @media (min-width: 768px) {
   .vehicle-detail {
     flex-direction: row;
@@ -696,6 +880,44 @@ hr {
 
   footer .copyright {
     margin-top: 100px;
+  }
+
+  /* .....Login Styling... */
+  .container {
+    padding: 10px;
+  }
+
+  .container h1 {
+    font-size: 20px;
+  }
+
+  .form-group input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  button[type="submit"] {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+
+  /* .......Registration Stlying */
+  .registration-form {
+    padding: 0.5em;
+    border-radius: 3px;
+  }
+
+  .form-input {
+    padding: 0.4em;
+  }
+
+  .submit-button {
+    padding: 0.6em;
+  }
+
+  .page-title {
+    font-size: 1.2em;
   }
 
 
