@@ -1,0 +1,17 @@
+<h1 class="management-title">
+    <%= title %>
+</h1>
+
+<% if (messages.notice) { %>
+    <div class="flash-message">
+        <%= messages.notice %>
+    </div>
+    <% } %>
+
+        <nav class="main-navigation">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="/inv/add-classification" class="nav-link">Add New Classification</a>
+                </li>
+                <li class="nav-item"><a href="/inv/add-inventory" class="nav-link">Add New Item</a></li>
+            </ul>
+        </nav>

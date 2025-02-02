@@ -1,0 +1,30 @@
+<h1 class="page-title">
+    <%= title %>
+</h1>
+
+<% if (messages.notice) { %>
+    <div class="flash-message">
+        <%= messages.notice %>
+    </div>
+<% } %>
+
+<% if (errors) { %>
+    <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li class="error-item">
+                <%= error.msg %>
+            </li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<form action="/inv/add-classification" method="POST" class="classification-form">
+    <label for="classificationName" class="form-label">Classification Name:</label>
+    <input type="text" id="classificationName" name="classification_name" required 
+        pattern="^[a-zA-Z0-9]+$"
+        title="Classification name must not contain spaces or special characters. Only alphanumeric characters are allowed."
+        class="form-input">
+    <button type="submit" class="Submit-button">Add Classification</button>
+</form>
+
+<a href="/inv/" class="Back-link">Back to Management</a>

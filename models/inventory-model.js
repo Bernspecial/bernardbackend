@@ -35,8 +35,66 @@ async function getVehicleById(inv_id) {
   return result.rows; // Return the first row of the result
 };
 
+/* *****************************
+*   Add classification
+* *************************** */
+async function addClassification(classification_name) {
+  try {
+    const sql = "INSERT INTO classification (classification_name) VALUES ($1) RETURNING *";
+    const result = await pool.query(sql, [classification_name]);
+    return result.rows[0]; // Return the newly added classification
+  } catch (error) {
+    console.error("Error adding classification:", error.message);
+    throw new Error("Could not add classification"); // Throw an error for better error handling
+  }
+}
+
+/* **********************
+ *   Check for existing email
+ * ********************* */
+async function checkExistingClassificationName(classification_name) {
+  try {
+    const sql = "SELECT * FROM classification WHERE classification_name = $1"
+    const cName = await pool.query(sql, [classification_name])
+    return cName.rowCount
+  } catch (error) {
+    return error.message
+  }
+}
+
+/* *****************************
+*  insert into inventory table
+* *************************** */
+async function addVehicle(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id) {
+  try {
+    const sql = "INSERT INTO inventory (inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *"
+    return await pool.query(sql, [inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id]).rows[0];
+  } catch (error) {
+    return error.message
+  }
+}
+
+/* **********************
+ *   Check for existing email
+ * ********************* */
+async function checkExistingVehicleName(inv_make, inv_model) {
+  try {
+    const sql = `
+      SELECT * FROM inventory 
+      WHERE inv_make = $1 
+        AND inv_model = $2 
+           `;
+    const values = await pool.query(sql, [inv_make, inv_model])
+    return values.rowCount;
+  } catch (error) {
+    return error.message;
+  }
+}
 
 
 
 
-module.exports = { getClassifications, getInventoryByClassificationId, getVehicleById }
+module.exports = {
+  getClassifications, getInventoryByClassificationId, getVehicleById,
+  addClassification, checkExistingClassificationName, addVehicle, checkExistingVehicleName
+}

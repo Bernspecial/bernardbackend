@@ -43,7 +43,7 @@ validate.registationRules = () => {
             .trim()
             .escape()
             .notEmpty()
-            .isLength({ min: 1 })
+            // .isLength({ min: 1 })
             .withMessage("Please provide a first name."), // on error this message is sent.
 
         // lastname is required and must be string
@@ -51,7 +51,7 @@ validate.registationRules = () => {
             .trim()
             .escape()
             .notEmpty()
-            .isLength({ min: 2 })
+            // .isLength({ min: 2 })
             .withMessage("Please provide a last name."), // on error this message is sent.
 
         // valid email is required and cannot already exist in the DB
@@ -110,7 +110,6 @@ validate.checkLoginData = async (req, res, next) => {
     const { account_email } = req.body
     let errors = []
     errors = validationResult(req)
-    console.log(errors)
     if (!errors.isEmpty()) {
         let nav = await utilities.getNav()
         return res.status(400).render("account/login", {

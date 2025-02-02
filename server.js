@@ -20,6 +20,7 @@ const errorRoute = require("./routes/errorRoute");
 const baseController = require("./controllers/baseController")
 const utilities = require("./utilities/index")
 const expressLayouts = require("express-ejs-layouts");
+// const inventory = require("./routes/addClassification")
 
 
 /* ***********************
@@ -71,6 +72,7 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Use the account routes
 app.use('/account', account);
+// app.use("/inventory", inventory);
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {

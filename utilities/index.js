@@ -84,6 +84,11 @@ Util.buildVehicleDetailHTML = (vehicles) => {
     return vehicleDetailsHTML;
 };
 
+Util.buildClassificationList = async function () {
+    const data = await invModel.getClassifications(); // Assuming this fetches classifications from the database
+    return data.rows; // Ensure this returns an array of classification objects
+};
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
