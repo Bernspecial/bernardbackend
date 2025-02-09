@@ -1,0 +1,65 @@
+<h1 class="page-title">
+    <%= title %>
+</h1>
+
+<div>
+    <% if (messages.notice) { %>
+        <div class="flash-message">
+            <%= messages.notice %>
+        </div>
+        <% } %>
+</div>
+<div>
+    <% if (errors) { %>
+        <ul class="notice">
+            <% errors.array().forEach(error=> { %>
+                <li>
+                    <%= error.msg %>
+                </li>
+                <% }) %>
+        </ul>
+        <% } %>
+</div>
+
+<!-- Account Update Form -->
+<form action="/account/updateAccount" method="POST" class="registration-form"> <!-- Added class -->
+    <label for="account_firstname" class="form-label">First Name:</label>
+    <input type="text" name="account_firstname" id="firstName" class="form-input" required
+        value="<%= locals.account_firstname %>">
+
+    <label for="account_lastname" class="form-label">Last Name:</label>
+    <input type="text" name="account_lastname" id="lastName" class="form-input" required
+        value="<%= locals.account_lastname %>">
+
+    <label for="account_email" class="form-label">Email:</label>
+    <input type="email" name="account_email" id="email" class="form-input" required
+        placeholder="Enter a valid email address" value="<%= locals.account_email %>">
+
+    <button type="submit" class="submit-button">Update Account</button> <!-- Added class -->
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+</form>
+
+<!-- Change Password Form -->
+<form action="/account/updatePassword" method="POST" class="change-password-form"> <!-- Added class -->
+    <label for="account_password" class="formlabel">New Password:</label>
+    <input type="password" name="account_password" id="password" class="form-input" required
+        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+    <div class="password-info">
+        <p class="password-p">By entering a new password, you will change your current password. Please ensure that your new password meets
+            the following requirements:</p>
+        <ul class="password-ul">
+            <li>At least 12 characters long</li>
+            <li>At least one uppercase letter (A-Z)</li>
+            <li>At least one lowercase letter (a-z)</li>
+            <li>At least one digit (0-9)</li>
+            <li>At least one special character (e.g., !@#$%^&*)</li>
+            <li>No spaces allowed</li>
+        </ul>
+    </div>
+
+    <button type="submit" class="password-button">Change Password</button> <!-- Added class -->
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+</form>
+
+<!-- Optional Login Link -->
+<!-- <p class="login-link">Already have an account? <a href="/account/login">Login here</a></p> -->

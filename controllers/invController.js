@@ -142,16 +142,225 @@ invCont.addInventory = async (req, res) => {
 invCont.management = async (req, res, next) => {
     try {
         let nav = await utilities.getNav();
+        const classificationSelect = await utilities.buildClassificationList()
         let flashMessage = req.flash('notice'); // Assuming you're using connect-flash
-
+        console.log('Classifications:', classificationSelect);
         res.render("./inventory/management", {
             title: "Management",
             nav,
             messages: { notice: flashMessage.length > 0 ? flashMessage[0] : null }, // Pass the message to the view
             errors: null,
+            classificationSelect,
         });
     } catch (error) {
         next(error);
+    }
+}
+
+/* ***************************
+ *  Return Inventory by Classification As JSON
+ * ************************** */
+invCont.getInventoryJSON = async (req, res, next) => {
+    const classification_id = parseInt(req.params.classification_id)
+    const invData = await invModel.getInventoryByClassificationId(classification_id)
+    if (invData[0].inv_id) {
+        return res.json(invData)
+    } else {
+        next(new Error("No data returned"))
+    }
+}
+
+/* ***************************
+ *  Build edit inventory view
+ * ************************** */
+invCont.editInventoryView = async function (req, res, next) {
+    const inv_id = parseInt(req.params.inv_id)
+    let nav = await utilities.getNav()
+    const itemData = await invModel.getVehicleById(inv_id)
+    console.log('Item Data:', itemData);
+
+
+    // I Checked if itemData is an array and access the first element
+    const vehicle = Array.isArray(itemData) ? itemData[0] : itemData;
+
+    // I used the if statemnet to confirm if the vehicle is valid.
+    if (!vehicle) {
+        return res.status(404).send('Item not found');
+    }
+    const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
+
+    // After using the variable vehicle to confirm if the iemData is an array
+    // then i used the vechicle result to display the inventory name.
+    const itemName = `${vehicle.inv_make || 'Unknown Make'} ${vehicle.inv_model || 'Unknown Model'}`;
+    let flashMessage = req.flash('notice'); // Assuming you're using connect-flash
+
+    res.render("./inventory/edit-inventory", {
+        title: "Edit " + itemName,
+        nav,
+        messages: { notice: flashMessage.length > 0 ? flashMessage[0] : null }, // Pass the message to the view
+        classificationSelect: classificationSelect,
+        errors: null,
+        inv_id: vehicle.inv_id, // Change this line to use vehicle.inv_id
+        inv_make: vehicle.inv_make,
+        inv_model: vehicle.inv_model,
+        inv_year: vehicle.inv_year,
+        inv_description: vehicle.inv_description,
+        inv_image: vehicle.inv_image,
+        inv_thumbnail: vehicle.inv_thumbnail,
+        inv_price: vehicle.inv_price,
+        inv_miles: vehicle.inv_miles,
+        inv_color: vehicle.inv_color,
+        classification_id: vehicle.classification_id,
+    })
+}
+
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
+invCont.updateInventory = async (req, res) => {
+    let nav = await utilities.getNav()
+    const { inv_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body;
+
+    // Check if inv_id is a valid integer
+    if (!inv_id || isNaN(inv_id)) {
+        req.flash("notice", "Invalid Inventory ID.");
+        return res.redirect("/inv/");
+    }
+
+    const updateResult = await invModel.updateVehicle(
+        inv_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id
+    )
+
+    if (updateResult) {
+        const itemName = `${inv_make} ${inv_model}`
+        req.flash(
+            "notice",
+            `Congratulations, you\'ve updated ${itemName}.`
+        )
+
+        return res.redirect("/inv/"); // Use redirect here
+    } else {
+        const classificationSelect = await utilities.buildClassificationList(classification_id)
+        const itemName = `${inv_make} ${inv_model}`
+        req.flash("notice", "Sorry, the request failed.")
+        res.status(501).render("/inv/edit-inventory", {
+            title: "Edit  " + itemName,
+            nav,
+            classificationSelect: classificationSelect,
+            errors: null,
+            inv_id,
+            inv_make,
+            inv_model,
+            inv_year,
+            inv_description,
+            inv_image,
+            inv_thumbnail,
+            inv_price,
+            inv_miles,
+            inv_color,
+            classification_id,
+        })
+        return
+        // return res.redirect("inventory/add-inventory"); // Use redirect here
+    }
+}
+
+
+
+/* ***************************
+ *  Build delete inventory view
+ * ************************** */
+
+invCont.deleteInv = async (req, res) => {
+    const inv_id = parseInt(req.params.inv_id)
+    let nav = await utilities.getNav()
+    const itemData = await invModel.getVehicleById(inv_id)
+    // console.log('Item Data:', itemData);
+
+
+    // I Checked if itemData is an array and access the first element
+    const vehicle = Array.isArray(itemData) ? itemData[0] : itemData;
+
+    // I used the if statemnet to confirm if the vehicle is valid.
+    if (!vehicle) {
+        return res.status(404).send('Item not found');
+    }
+    // const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
+
+    // After using the variable vehicle to confirm if the iemData is an array
+    // then i used the vechicle result to display the inventory name.
+    const itemName = `${vehicle.inv_make || 'Unknown Make'} ${vehicle.inv_model || 'Unknown Model'}`;
+    let flashMessage = req.flash('notice'); // Assuming you're using connect-flash
+
+    res.render("./inventory/delete-confirm", {
+        title: "Delete " + itemName,
+        nav,
+        messages: { notice: flashMessage.length > 0 ? flashMessage[0] : null }, // Pass the message to the view
+        // classificationSelect: classificationSelect,
+        errors: null,
+        inv_id: vehicle.inv_id, // Change this line to use vehicle.inv_id
+        inv_make: vehicle.inv_make,
+        inv_model: vehicle.inv_model,
+        inv_year: vehicle.inv_year,
+        // inv_description: vehicle.inv_description,
+        // inv_image: vehicle.inv_image,
+        // inv_thumbnail: vehicle.inv_thumbnail,
+        inv_price: vehicle.inv_price,
+        // inv_miles: vehicle.inv_miles,
+        // inv_color: vehicle.inv_color,
+        // classification_id: vehicle.classification_id,
+    })
+}
+
+
+/* ***************************
+ *  Delete Inventory Data
+ * ************************** */
+invCont.deleteInventory = async (req, res) => {
+    let nav = await utilities.getNav()
+    const { inv_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body;
+
+    // // Check if inv_id is a valid integer
+    // if (!inv_id || isNaN(inv_id)) {
+    //     req.flash("notice", "Invalid Inventory ID.");
+    //     return res.redirect("/inv/");
+    // }
+
+    const deleteResult = await invModel.deleteVehicle(
+        inv_id, inv_make, inv_model, inv_year, inv_price,
+    )
+
+    if (deleteResult) {
+        const itemName = `${inv_make} ${inv_model}`
+        req.flash(
+            "notice",
+            `Congratulations, you\'ve deleted ${itemName} from inventory.`
+        )
+
+        return res.redirect("/inv/"); // Use redirect here
+    } else {
+        // const classificationSelect = await utilities.buildClassificationList(classification_id)
+        const itemName = `${inv_make} ${inv_model}`
+        req.flash("notice", "Sorry, the request failed.")
+        res.status(501).render("/inv/edit-inventory", {
+            title: "Edit  " + itemName,
+            nav,
+            // classificationSelect: classificationSelect,
+            errors: null,
+            inv_id,
+            inv_make,
+            inv_model,
+            inv_year,
+            // inv_description,
+            // inv_image,
+            // inv_thumbnail,
+            inv_price,
+            // inv_miles,
+            // inv_color,
+            // classification_id,
+        })
+        return
+        // return res.redirect("inventory/add-inventory"); // Use redirect here
     }
 }
 
@@ -159,5 +368,7 @@ invCont.triggerError = (req, res) => {
     // Intentionally throw an error to trigger the error handling middleware
     throw new Error('This is an intentional error for testing purposes.');
 };
+
+
 
 module.exports = invCont

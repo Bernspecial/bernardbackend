@@ -1,0 +1,53 @@
+<h1 class="inv-title">
+    <%= title %>
+</h1>
+
+<div>
+    <% if (messages.notice) { %>
+        <div class="flash-message">
+            <%= messages.notice %>
+        </div>
+</div>
+<div>
+    <% } %>
+        <% if (errors) { %>
+            <ul class="notice">
+                <% errors.array().forEach(error=> { %>
+                    <li>
+                        <%= error.msg %>
+                    </li>
+                    <% }) %>
+            </ul>
+            <% } %>
+</div>
+<form action="/inv/delete" method="POST" class="inventory-form">
+    <label for="inv_make" class="form-label">Make:</label>
+    <input type="text" id="inv_make" name="inv_make" required value="<%= locals.inv_make %>" class="form-input"
+        readonly>
+
+    <label for="inv_model" class="form-label">Model:</label>
+    <input type="text" id="inv_model" name="inv_model" required value="<%= locals.inv_model %>" class="form-input"
+        readonly>
+
+    <label for="inv_year" class="form-label">Year:</label>
+    <input type="text" id="inv_year" name="inv_year" required value="<%= locals.inv_year %>" pattern="\d{4}"
+        title="Please enter a valid year (4 digits)" class="form-input" readonly>
+
+   
+
+    <label for=" inv_price" class="form-label">Price:</label>
+    <input type="number" id="inv_price" name="inv_price" required value="<%= locals.inv_price %>" class="form-input"
+        readonly>
+
+   
+    <label for="confirmation" class="confirmation">Confirm Deletion - The delete is permanent.</label>
+    <button type="submit" class="inv-form-button" value="Delete Vehicle">Delete Vehicle</button>
+    <div>
+        <!-- <input type="hidden" name="inv_id" <% if (locals.inv_id) { %> value="<%= locals.inv_id %>" <% } %>> -->
+        <input type="hidden" name="inv_id" value="<%= inv_id %>">
+    </div>
+</form>
+
+<a href="/inv/" class="back-link">Back to Inventory</a>
+
+<!-- <script src="../../js/inv-update.js"></script> -->

@@ -66,6 +66,13 @@ validate.addInvRules = () => {
             .notEmpty()
             .withMessage("Color is required."),
 
+        body("inv_id")
+            .trim()
+            .escape()
+            .notEmpty()
+            .isNumeric()
+            .withMessage("Inventory ID is required and must be a number."),
+
     ];
 }
 
@@ -93,5 +100,32 @@ validate.checkInvData = async (req, res, next) => {
     }
     next()
 }
+
+
+/* ******************************
+ * errors will be directed back to the view
+ * ***************************** */
+validate.checkUpdateData = async (req, res, next) => {
+    const { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body
+    let errors = []
+    errors = validationResult(req)
+    const classifications = await util.buildClassificationList(); // Fetch classifications again
+    // Get classification_id from the request (if applicable)
+    const inv_id = req.body.inv_id || ''; // Adjust this based on your logic
+    if (!errors.isEmpty()) {
+        let nav = await util.getNav()
+        res.render("inventory/edit-inventory", {
+            errors,
+            title: "Edit Inventory",
+            nav,
+            inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, inv_id,
+            classifications,
+            classification_id,
+        })
+        return;
+    }
+    next()
+}
+
 
 module.exports = validate;

@@ -1,0 +1,76 @@
+<h1 class="inv-title">
+    <%= title %>
+</h1>
+
+<div>
+    <% if (messages.notice) { %>
+        <div class="flash-message">
+            <%= messages.notice %>
+        </div>
+</div>
+<div>
+    <% } %>
+        <% if (errors) { %>
+            <ul class="notice">
+                <% errors.array().forEach(error=> { %>
+                    <li>
+                        <%= error.msg %>
+                    </li>
+                    <% }) %>
+            </ul>
+            <% } %>
+</div>
+<form action="/inv/update" method="POST" id="updateForm" class="inventory-form">
+    <label for="inv_make" class="form-label">Make:</label>
+    <input type="text" id="inv_make" name="inv_make" required value="<%= locals.inv_make %>" class="form-input">
+
+    <label for="inv_model" class="form-label">Model:</label>
+    <input type="text" id="inv_model" name="inv_model" required value="<%= locals.inv_model %>" class="form-input">
+
+    <label for="inv_year" class="form-label">Year:</label>
+    <input type="text" id="inv_year" name="inv_year" required value="<%= locals.inv_year %>" pattern="\d{4}"
+        title="Please enter a valid year (4 digits)" class="form-input">
+
+    <label for="inv_description" class="form-label">Description:</label>
+    <textarea id="inv_description" name="inv_description" required
+        class="form-textarea"><%= locals.inv_description %></textarea>
+
+    <label for="inv_image" class="form-label">Image URL:</label>
+    <input type="text" id="inv_image" name="inv_image" required class="form-input"
+        value="../images/vehicles/no-image-tn.png">
+    <img src="/images/vehicles/no-image-tn.png" alt="">
+    <label for="inv_thumbnail" class="form-label">Thumbnail URL:</label>
+    <input type="text" id="inv_thumbnail" name="inv_thumbnail" required class="form-input"
+        value="../images/vehicles/no-image-tn.png">
+    <img src="/images/vehicles/no-image-tn.png" alt="no-image-available">
+
+    <label for=" inv_price" class="form-label">Price:</label>
+    <input type="number" id="inv_price" name="inv_price" required value="<%= locals.inv_price %>" class="form-input">
+
+    <label for="inv_miles" class="form-label">Miles:</label>
+    <input type="number" id="inv_miles" name="inv_miles" required value="<%= locals.inv_miles %>" class="form-input">
+
+    <label for="inv_color" class="form-label">Color:</label>
+    <input type="text" id="inv_color" name="inv_color" required value="<%= locals.inv_color %>" class="form-input">
+
+    <label for="classification_id" class="form-label">Classification:</label>
+    <select id="classification_id" name="classification_id" required class="form-select">
+        <option value="">Select Classification</option>
+        <% classificationSelect.forEach(function(classification) { %>
+            <option value="<%= classification.classification_id %>" <%=classification.classification_id===(
+                classification_id || '' ) ? 'selected' : '' %>>
+                <%= classification.classification_name %>
+            </option>
+            <% }); %>
+    </select>
+
+    <button type="submit" disabled class="inv-form-button" value="Update Vehicle">Update Vehicle</button>
+    <div>
+        <!-- <input type="hidden" name="inv_id" <% if (locals.inv_id) { %> value="<%= locals.inv_id %>" <% } %>> -->
+        <input type="hidden" name="inv_id" value="<%= inv_id %>">
+    </div>
+</form>
+
+<a href="/inv/" class="back-link">Back to Inventory</a>
+
+<script src="../../js/inv-update.js"></script>

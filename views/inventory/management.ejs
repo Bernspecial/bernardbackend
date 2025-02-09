@@ -2,16 +2,31 @@
     <%= title %>
 </h1>
 
-<% if (messages.notice) { %>
-    <div class="flash-message">
-        <%= messages.notice %>
-    </div>
-    <% } %>
+<div>
+    <% if (messages.notice) { %>
+        <div class="flash-message">
+            <%= messages.notice %>
+        </div>
+        <% } %>
+</div>
+<h2>Manage Inventory</h2>
+<p>Select a classification from the list</p>
+<select id="classificationList">
+    <% classificationSelect.forEach(function(classification) { %>
+        <option value="<%= classification.classification_id %>">
+            <%= classification.classification_name %>
+        </option>
+        <% }); %>
+</select>
 
-        <nav class="main-navigation">
-            <ul class="nav-list">
-                <li class="nav-item"><a href="/inv/add-classification" class="nav-link">Add New Classification</a>
-                </li>
-                <li class="nav-item"><a href="/inv/add-inventory" class="nav-link">Add New Item</a></li>
-            </ul>
-        </nav>
+<table id="inventoryDisplay"></table>
+<noscript>JavaScript must be enabled to use this page.</noscript>
+<nav class="main-navigation">
+    <ul class="nav-list">
+        <li class="nav-item"><a href="/inv/add-classification" class="nav-link">Add New Classification</a>
+        </li>
+        <li class="nav-item"><a href="/inv/add-inventory" class="nav-link">Add New Item</a></li>
+    </ul>
+</nav>
+
+<script src="../../js/inventory.js"></script>

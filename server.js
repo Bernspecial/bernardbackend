@@ -20,6 +20,7 @@ const errorRoute = require("./routes/errorRoute");
 const baseController = require("./controllers/baseController")
 const utilities = require("./utilities/index")
 const expressLayouts = require("express-ejs-layouts");
+const cookieParser = require("cookie-parser");
 // const inventory = require("./routes/addClassification")
 
 
@@ -40,6 +41,12 @@ app.use(session({
   name: 'sessionId',
 }))
 
+// this is the middleware to detect if the user is logged in or out.
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; // Make user data available in views
+  next(); // Call the next middleware or route handler
+});
+
 
 // Express Messages Middleware
 app.use(require('connect-flash')())
@@ -54,7 +61,8 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "./layouts/layout"); // not at views root
 
-
+app.use(cookieParser())
+app.use(utilities.checkJWTToken)
 
 /* ***********************
  * Routes
