@@ -37,4 +37,7 @@ router.post("/updateAccount", validate.updateRules(), validate.checkAcctUpdateDa
 
 router.post("/updatePassword", validate.validateChangePassword(), validate.checkPasswordUpdate, Util.handleErrors(accountController.changePassword))
 
+router.get("/imageupload/:acct_id", Util.handleErrors(accountController.buildImageUpload))
+// Route for uploading profile picture
+router.post("/uploadProfilePicture", Util.handleErrors(accountController.uploadProfilePicture));
 module.exports = router;

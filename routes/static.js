@@ -11,6 +11,9 @@ const path = require('path');
 
 router.use(express.static(path.join(__dirname, '../public'))); // Adjust the path as necessary
 
+// Serve static files from the uploads directory
+router.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
 module.exports = router;
 
 

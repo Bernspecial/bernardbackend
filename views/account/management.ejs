@@ -21,26 +21,64 @@
         </ul>
         <% } %>
 </div>
-<p class="management-p">You're logged in</p>
 
 <div>
     <% if (user) { %>
         <h2 class="management-h2">Welcome <%= user.account_firstname %>
+                <p class="management-p">You're logged in</p>
         </h2>
+        <hr class="line">
 
-        <% if (user.account_type==='Employee' || user.account_type==='Admin' ) { %>
-            <h3 class="management-h3">Inventory Management</h3>
-            <p>
-                <a class="updatelink" href="/inv/" title="Access Inventory Management">Access Inventory Management</a>
-            </p>
-            <% } %>
-
+        <div>
+            <% if (user.account_type==='Employee' || user.account_type==='Admin' ) { %>
+                <h3 class="management-h3">Inventory Management</h3>
                 <p>
-                    <a class="management-a" href="/account/update/<%= user.account_id %>" title="Update Account Information">Update
-                        Account
-                        Information</a>
+                    <a class="updatelink" href="/inv/" title="Access Inventory Management">Access Inventory
+                        Management</a>
                 </p>
+                <% } %>
+        </div>
+
+        <p>
+            <a class="management-a" href="/account/update/<%= user.account_id %>"
+                title="Update Account Information">Update Account Information</a>
+        </p>
+
+
+        <!-- Display Profile Picture -->
+        <div>
+            <% if (user.account_picture) { %>
+                <div class="profile-picture">
+                    <img src="<%= user.account_picture %>" alt="Profile Picture" class="profile-img">
+                    <a class="management-pic" href="/account/imageupload/<%= user.account_id %>"
+                        title="Update Profile Picture">Update Profile Picture</a>
+                </div>
                 <% } else { %>
-                    <p class="management-p">Please log in to manage your account.</p>
+                    <div class="profile-picture">
+                        <a class="management-pic" href="/account/imageupload/<%= user.account_id %>"
+                            title="Update Profile Picture">Add Profile Picture</a>
+                    </div>
                     <% } %>
+        </div>
+
+        <!-- Display Bio -->
+        <div>
+            <% if (user.account_bio) { %>
+                <div class="bio">
+                    <h4>Bio:</h4>
+                    <p>
+                        <%= user.account_bio %>
+                    </p>
+                </div>
+                <% } else { %>
+                    <div class="bio">
+                        <h4>Bio:</h4>
+                        <p>No bio available.</p>
+                    </div>
+                    <% } %>
+        </div>
+
+        <% } else { %>
+            <p class="management-p">Please log in to manage your account.</p>
+            <% } %>
 </div>

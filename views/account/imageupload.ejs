@@ -1,0 +1,33 @@
+<h1 class="page-title">
+    <%= title %>
+</h1>
+
+<div>
+    <% if (messages.notice) { %>
+        <div class="flash-message">
+            <%= messages.notice %>
+        </div>
+        <% } %>
+            <% if (errors) { %>
+                <ul class="notice">
+                    <% errors.array().forEach(error=> { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
+</div>
+
+<form id="upload-form" class="form-container" action="/account/uploadProfilePicture" method="POST"
+    enctype="multipart/form-data">
+    <!-- Profile Picture Field -->
+    <label for="account_picture" class="form-label-pic">Profile Picture:</label>
+    <input type="file" name="profilePicture" id="profilePicture" class="form-input-pic" accept="image/*"
+        value="<%= locals.account_picture %>">
+
+    <button id="image-button" type="submit">Upload</button>
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+</form>
+<script src="../../js/image.js"></script>
+<!-- <script src="/path/to/your/scripts.js"></script> Add your script path here -->

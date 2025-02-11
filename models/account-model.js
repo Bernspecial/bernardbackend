@@ -41,10 +41,10 @@ async function updatePassword(account_password, account_id) {
 /* *****************************
 *   Register new account
 * *************************** */
-async function registerAccount(account_firstname, account_lastname, account_email, account_password) {
+async function registerAccount(account_firstname, account_lastname, account_email, account_password, account_bio) {
     try {
-        const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, 'Client') RETURNING *"
-        return await pool.query(sql, [account_firstname, account_lastname, account_email, account_password])
+        const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_bio, account_type) VALUES ($1, $2, $3, $4, $5, 'Client') RETURNING *"
+        return await pool.query(sql, [account_firstname, account_lastname, account_email, account_password, account_bio])
     } catch (error) {
         return error.message
     }
@@ -83,7 +83,7 @@ async function checkPassword(account_password) {
 async function getAccountByEmail(account_email) {
     try {
         const result = await pool.query(
-            'SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password FROM account WHERE account_email = $1',
+            'SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password, account_bio, account_picture FROM account WHERE account_email = $1',
             [account_email])
         return result.rows[0]
     } catch (error) {
@@ -92,8 +92,15 @@ async function getAccountByEmail(account_email) {
 }
 
 
+// In your account-model.js
+async function updateProfilePicture(account_id, account_picture) {
+    const sql = "UPDATE public.account SET account_picture = $1 WHERE account_id = $2 RETURNING *";
+    const result = await pool.query(sql, [account_picture, account_id]);
+    return result.rows[0]; // Return the updated account data
+}
+
 module.exports = {
     registerAccount, checkExistingEmail,
     getAccountByEmail, getAccountById, updateAcct,
-    updatePassword, checkPassword
+    updatePassword, checkPassword, updateProfilePicture
 }

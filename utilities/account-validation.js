@@ -142,8 +142,6 @@ validate.checkAcctUpdateData = async (req, res, next) => {
     const { account_firstname, account_lastname, account_email } = req.body
     let errors = []
     errors = validationResult(req)
-    // const classifications = await util.buildClassificationList(); // Fetch classifications again
-    // Get classification_id from the request (if applicable)
     const account_id = req.body.account_id || ''; // Adjust this based on your logic
     if (!errors.isEmpty()) {
         let nav = await utilities.getNav()
@@ -152,9 +150,6 @@ validate.checkAcctUpdateData = async (req, res, next) => {
             title: "Edit Account",
             nav,
             account_firstname, account_lastname, account_email, account_id
-            // inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, inv_id,
-            // classifications,
-            // classification_id,
         })
         return;
     }
@@ -217,8 +212,6 @@ validate.checkPasswordUpdate = async (req, res, next) => {
     const { account_password } = req.body
     let errors = []
     errors = validationResult(req)
-    // const classifications = await util.buildClassificationList(); // Fetch classifications again
-    // Get classification_id from the request (if applicable)
     const account_id = req.body.account_id || ''; // Adjust this based on your logic
     if (!errors.isEmpty()) {
         let nav = await utilities.getNav()
@@ -227,9 +220,6 @@ validate.checkPasswordUpdate = async (req, res, next) => {
             title: "Edit Account",
             nav,
             account_password, account_id,
-            // inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, inv_id,
-            // classifications,
-            // classification_id,
         })
         return;
     }

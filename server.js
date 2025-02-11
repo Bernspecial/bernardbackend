@@ -11,6 +11,7 @@ const bodyParser = require("body-parser")
 const env = require("dotenv").config();
 const app = express();
 const path = require('path');
+const multer = require('multer');
 const static = require("./routes/static");
 const account = require('./routes/accountRoute');
 const session = require("express-session")
@@ -63,6 +64,8 @@ app.set("layout", "./layouts/layout"); // not at views root
 
 app.use(cookieParser())
 app.use(utilities.checkJWTToken)
+
+
 
 /* ***********************
  * Routes

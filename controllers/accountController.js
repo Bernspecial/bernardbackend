@@ -1,4 +1,6 @@
 const utilities = require("../utilities/")
+const multer = require("multer");
+const path = require("path");
 const account = require("../models/account-model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
@@ -47,7 +49,7 @@ async function buildRegister(req, res, next) {
 * *************************************** */
 async function registerAccount(req, res) {
     let nav = await utilities.getNav()
-    const { account_firstname, account_lastname, account_email, account_password } = req.body
+    const { account_firstname, account_lastname, account_email, account_password, account_bio } = req.body
 
     // Hash the password before storing
     let hashedPassword
@@ -67,7 +69,8 @@ async function registerAccount(req, res) {
         account_firstname,
         account_lastname,
         account_email,
-        hashedPassword
+        hashedPassword,
+        account_bio,
     )
 
     if (regResult) {
@@ -118,6 +121,8 @@ async function accountLogin(req, res) {
                 account_firstname: accountData.account_firstname,
                 account_lastname: accountData.account_lastname,
                 account_email: accountData.account_email,
+                account_bio: accountData.account_bio,
+                account_picture: accountData.account_picture,
                 account_type: accountData.account_type,
             };
 
@@ -151,6 +156,7 @@ async function accountManagement(req, res) {
     let nav = await utilities.getNav(); // Get navigation items
     let flashMessage = req.flash('notice');
     const user = req.session.user;
+    console.log("User  account picture:", user);
     res.render('account/management', {
         title: 'Account Management',
         nav,
@@ -282,11 +288,11 @@ const changePassword = async (req, res) => {
         console.log("Received password change request for account ID:", account_id);
 
         const hashedPassword = await bcrypt.hash(account_password, 10);
-       
+
         // Update the password in the database
         const updateResult = await account.updatePassword(hashedPassword, account_id);
         console.log("Update result:", updateResult);
-        
+
         if (updateResult) {
             req.flash("notice", "Your password has been changed successfully.");
             return res.redirect("/account/"); // Redirect to the update page or account management
@@ -301,9 +307,106 @@ const changePassword = async (req, res) => {
     }
 };
 
+/* ****************************************
+*  Deliver image upload view
+* *************************************** */
+async function buildImageUpload(req, res, next) {
+    const acct_id = parseInt(req.params.acct_id)
+    let nav = await utilities.getNav()
+    const accountData = await account.getAccountById(acct_id)
+    // console.log('Item Data:', accountData);
+
+
+    // I Checked if itemData is an array and access the first element
+    const details = Array.isArray(accountData) ? accountData[0] : accountData;
+
+    // I used the if statemnet to confirm if the vehicle is valid.
+    if (!details) {
+        return res.status(404).send('Item not found');
+    }
+    // const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
+
+    // After using the variable vehicle to confirm if the iemData is an array
+    // then i used the vechicle result to display the inventory name.
+    // const accountName = `${details.account_firstname || 'Unknown firstname'} ${details.account_lastname || 'Unknown lastname'}`;
+    let flashMessage = req.flash('notice'); // Assuming you're using connect-flash
+
+    res.render("./account/imageupload", {
+        title: "Add Profile Picture",
+        nav,
+        messages: { notice: flashMessage.length > 0 ? flashMessage[0] : null }, // Pass the message to the view
+        // classificationSelect: classificationSelect,
+        errors: null,
+        account_id: details.account_id, // Change this line to use vehicle.inv_id
+        account_picture: details.account_picture,
+        // account_lastname: details.account_lastname,
+        // account_email: details.account_email,
+        // account_password: details.account_password,
+        // account_type: details.account_type,
+    })
+}
+
+
+/* ****************************************
+*  Handling the picture upload
+* *************************************** */
+
+// Set storage engine
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/"); // Directory to store uploaded images
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the original filename
+    },
+});
+
+// Initialize upload
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|gif/; // Allowed file types
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+        if (extname && mimetype) {
+            return cb(null, true);
+        } else {
+            cb("Error: File type not supported");
+        }
+    },
+}).single("profilePicture"); // Expecting a single file with the field name 'profilePicture'
+
+// Route to handle profile picture upload
+async function uploadProfilePicture(req, res) {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ status: "error", message: err.message });
+        }
+
+        const url = req.protocol + "://" + req.get("host");
+        const profilePicturePath = req.file ? url + "/" + req.file.path : null;
+
+        // Assuming you have a user ID in the request to update the user's profile
+        const userId = req.session.user.account_id; // Get user ID from session
+
+        try {
+            await account.updateProfilePicture(userId, profilePicturePath); // Update the profile picture in the database
+
+            // Update the session with the new profile picture
+            req.session.user.account_picture = profilePicturePath;
+
+            req.flash("notice", "Profile picture uploaded successfully.");
+            return res.redirect("/account/"); // Redirect to account management page
+        } catch (error) {
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    });
+}
+
 
 module.exports = {
     buildLogin, buildRegister, registerAccount, accountLogin,
     accountManagement, checkAdminAccess, editAccountView, updateAccount,
-    changePassword
+    changePassword, buildImageUpload, uploadProfilePicture, upload
 }
